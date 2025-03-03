@@ -16,9 +16,7 @@ import { useAuth } from "@/contexts/AuthContext";
 const NoteScreen = () => {
   const router = useRouter();
 
-  const authContext = useAuth();
-  const user = authContext?.user;
-  const authLoading = authContext?.loading;
+  const { user, loading: authLoading } = useAuth();
 
   const [notes, setNotes] = useState([] as NoteType[]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -40,7 +38,7 @@ const NoteScreen = () => {
 
   const fetchNotes = async () => {
     setLoading(true);
-    const response = await noteService.getNotes();
+    const response = await noteService.getNotes(user?.$id as string);
     if (response.error) {
       setError(response.error);
     } else {
@@ -54,7 +52,7 @@ const NoteScreen = () => {
   const addNote = async () => {
     if (noteText.trim() == "") return null;
 
-    const response = await noteService.addNote(noteText);
+    const response = await noteService.addNote(user?.$id as string, noteText);
 
     if (response.error) {
       Alert.alert("Error", response.error);
@@ -97,6 +95,9 @@ const NoteScreen = () => {
         <>
           {error && <Text style={{ color: "red" }}>{error.toString()}</Text>}
           {/* Note List */}
+          {notes.length === 0 && (
+            <Text style={styles.noNotesText}>No notes found</Text>
+          )}
           <NoteList notes={notes} onDelete={deleteNote} onEdit={updateNote} />
         </>
       )}
@@ -142,5 +143,12 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
+  },
+  noNotesText: {
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#aaa",
+    marginTop: 20,
   },
 });

@@ -7,7 +7,6 @@ import {
   PropsWithChildren,
 } from "react";
 import authService from "@/services/authService";
-// import { User, Preferences } from "appwrite";
 import { Models } from "react-native-appwrite";
 
 interface AuthContextValue {
@@ -44,7 +43,7 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   };
 
   const login = async (email: string, password: string) => {
-    const response = await authService.login(email, password);
+    await authService.login(email, password);
 
     await checkUser();
 
@@ -78,4 +77,10 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error();
+  }
+  return context;
+};
