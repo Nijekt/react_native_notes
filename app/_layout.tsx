@@ -1,9 +1,10 @@
+import { AuthProvider } from "@/contexts/AuthContext";
 import { Stack } from "expo-router";
 import { StatusBar } from "react-native";
 
 const RootLayout = () => {
   return (
-    <>
+    <AuthProvider>
       <StatusBar barStyle={"default"} backgroundColor={"#ff8c00"} />
       <Stack
         screenOptions={{
@@ -22,7 +23,7 @@ const RootLayout = () => {
         <Stack.Screen name="index" options={{ title: "Home Page" }} />
         <Stack.Screen name="notes" options={{ headerTitle: "Notes" }} />
       </Stack>
-    </>
+    </AuthProvider>
   );
 };
 
